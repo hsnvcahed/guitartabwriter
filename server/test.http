@@ -1,0 +1,18 @@
+GET http://localhost:3000/actors
+###
+GET http://localhost:3000/movies
+###
+GET http://localhost:3000/movies?rated=PG-13&genre=Action
+###
+GET http://localhost:3000/movies/7/actors
+###
+POST http://localhost:3000/actors
+Content-Type: application/json
+
+{
+    "name": "James Garner",
+    "image": "keines",
+    "born": "1999-12-12"
+}
+###
+DELETE  http://localhost:3000/actors/22
