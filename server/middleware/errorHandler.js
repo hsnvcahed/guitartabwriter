@@ -3,6 +3,7 @@
 const errorHandler = (err, req, res, next) => {
   if (err) {
     console.log('ERROR ===>', err.message.red.inverse);
+    res.status(500).send(err.message);
   } else next();
 };
 const notFound = (req, res) => {

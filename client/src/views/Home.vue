@@ -1,7 +1,12 @@
 <template>
   <v-container class="d-flex justify-center flex-column text-center">
     <div class="text-h1">Home Page</div>
-    <v-btn class="green white--text my-5" @click="login()">Log In</v-btn>
+    <v-container class="pa-3" style="width: 100%">
+      <v-btn v-if="!isLoggedIn" class="green white--text my-5 mx-1" @click="login()">Log In</v-btn>
+      <v-btn v-if="!isLoggedIn" class="blue white--text my-5 mx-1" @click="register()">Register</v-btn>
+    </v-container>
+    <v-btn v-if="isLoggedIn" class="purple white--text my-5" @click="logout()">Log Out</v-btn>
+    <v-btn class="red darken-3 white--text my-5" @click="getData()">Get Data</v-btn>
     <v-data-table :headers="headers" :items="response"></v-data-table>
   </v-container>
 </template>
@@ -19,6 +24,7 @@ export default {
         { text: 'Name', value: 'name' },
         { text: 'Type', value: 'mimeType' },
       ],
+      isLoggedIn: false,
     };
   },
   components: {},
@@ -28,8 +34,6 @@ export default {
       const goaRes = await googleUser.grantOfflineAccess({
         scope: 'https://www.googleapis.com/auth/drive.metadata',
       });
-      console.log(goaRes);
-      console.log('++++++++++++++++++');
       const res = await axios({
         url: 'http://localhost:3000/login',
         method: 'POST',
@@ -38,9 +42,49 @@ export default {
           code: goaRes.code,
         },
       });
-      console.log(res.data);
-      this.response = res.data;
+      if (res.data.code !== 401) localStorage.setItem('GoogelUserCode', goaRes.code);
+      else alert(res.data.data);
+      this.isLoggedInF();
     },
+    async register() {
+      const googleUser = await this.$gAuth.signIn();
+      const userData = await googleUser.getBasicProfile();
+
+      const res = await axios({
+        url: 'http://localhost:3000/register',
+        method: 'POST',
+        'Content-Type': 'application/json',
+        data: {
+          email: userData.Xt,
+          name: userData.Re,
+        },
+      });
+      if (res.data.code === 401) alert(res.data.data);
+    },
+    isLoggedInF() {
+      const code = localStorage.getItem('GoogelUserCode');
+      if (code) this.isLoggedIn = true;
+      else this.isLoggedIn = false;
+    },
+    async getData() {
+      const res = await axios({
+        url: 'http://localhost:3000/testdrive',
+        method: 'GET',
+        'Content-Type': 'application/json',
+      });
+      this.response = res.data.driveRes.data.files;
+    },
+    async logout() {
+      await axios({
+        method: 'GET',
+        url: 'http://localhost:3000/logout',
+      });
+      localStorage.clear();
+      this.isLoggedInF();
+    },
+  },
+  created() {
+    this.isLoggedInF();
   },
 };
 </script>
