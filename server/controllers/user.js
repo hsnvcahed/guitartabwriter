@@ -6,6 +6,20 @@ const model = require('../model/user');
 
 const client = new OAuth2Client(keys.web.client_id, keys.web.client_secret, 'http://localhost:8080');
 
+const createTabFolder = asyncHandler(async () => {
+  const fileMetadata = {
+    name: 'GuitarTabWriter',
+    mimeType: 'application/vnd.google-apps.folder',
+  };
+  const drive = google.drive({ version: 'v3', auth: client });
+  const driveRes = await drive.files.create({
+    resource: fileMetadata,
+    fields: 'id',
+  });
+
+  return driveRes.data.id;
+});
+
 const login = asyncHandler(async (req, res) => {
   const userCode = req.body.code;
   const r = await client.getToken(userCode);
@@ -29,7 +43,10 @@ const login = asyncHandler(async (req, res) => {
     }
     client.setCredentials(r.tokens);
     req.session.userEmail = UserData.getPayload().email;
-    res.status(200).send('Logged in');
+    res.status(200).json({
+      code: 200,
+      data: UserData.getPayload().email,
+    });
   } else {
     res.status(200).json({
       code: 401,
@@ -39,16 +56,21 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const register = asyncHandler(async (req, res) => {
-  const userEmail = req.body.email;
-  console.log(userEmail);
+  const userCode = req.body.code;
+  const r = await client.getToken(userCode);
 
-  const userName = req.body.name;
+  const UserData = await client.verifyIdToken({ idToken: r.tokens.id_token, audience: keys.web.client_id });
+
+  const userEmail = UserData.getPayload().email;
+  const userName = UserData.getPayload().name;
   const result = await model.getUser(userEmail);
 
   console.log(result);
 
   if (result.length === 0) {
-    const resultt = await model.createUser(userName, userEmail);
+    client.setCredentials(r.tokens);
+    const rootId = await createTabFolder();
+    const resultt = await model.createUser(userName, userEmail, rootId);
     res.status(201).json(resultt);
   } else {
     res.status(200).json({

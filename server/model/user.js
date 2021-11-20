@@ -6,9 +6,12 @@ async function getUser(email) {
   return res.rows;
 }
 
-async function createUser(name, email) {
-  const res = await db.query('INSERT INTO users (name, email) VALUES ($1,$2) RETURNING *', [name, email]);
-  console.log(res);
+async function createUser(name, email, rootId) {
+  const res = await db.query('INSERT INTO users (name, email,root_folder) VALUES ($1,$2,$3) RETURNING *', [
+    name,
+    email,
+    rootId,
+  ]);
 
   return res.rows;
 }

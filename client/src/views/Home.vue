@@ -4,9 +4,13 @@
     <v-container class="pa-3" style="width: 100%">
       <v-btn v-if="!isLoggedIn" class="green white--text my-5 mx-1" @click="login()">Log In</v-btn>
       <v-btn v-if="!isLoggedIn" class="blue white--text my-5 mx-1" @click="register()">Register</v-btn>
+      <v-btn v-if="isLoggedIn" class="purple white--text my-5" @click="logout()">Log Out</v-btn>
     </v-container>
-    <v-btn v-if="isLoggedIn" class="purple white--text my-5" @click="logout()">Log Out</v-btn>
-    <v-btn class="red darken-3 white--text my-5" @click="getData()">Get Data</v-btn>
+    <v-btn v-if="isLoggedIn" class="red darken-3 white--text my-5" @click="getData()">Get Data</v-btn>
+    <v-container v-if="isLoggedIn">
+      <input type="text" v-model="tabName" />
+      <v-btn class="red darken-3 white--text my-5" @click="createTab()">Create Tab</v-btn>
+    </v-container>
     <v-data-table :headers="headers" :items="response"></v-data-table>
   </v-container>
 </template>
@@ -25,6 +29,7 @@ export default {
         { text: 'Type', value: 'mimeType' },
       ],
       isLoggedIn: false,
+      tabName: '',
     };
   },
   components: {},
@@ -32,7 +37,7 @@ export default {
     async login() {
       const googleUser = await this.$gAuth.signIn();
       const goaRes = await googleUser.grantOfflineAccess({
-        scope: 'https://www.googleapis.com/auth/drive.metadata',
+        scope: 'https://www.googleapis.com/auth/drive.file',
       });
       const res = await axios({
         url: 'http://localhost:3000/login',
@@ -42,27 +47,27 @@ export default {
           code: goaRes.code,
         },
       });
-      if (res.data.code !== 401) localStorage.setItem('GoogelUserCode', goaRes.code);
+      if (res.data.code !== 401) localStorage.setItem('UserEmail', res.data.data);
       else alert(res.data.data);
       this.isLoggedInF();
     },
     async register() {
       const googleUser = await this.$gAuth.signIn();
-      const userData = await googleUser.getBasicProfile();
-
+      const goaRes = await googleUser.grantOfflineAccess({
+        scope: 'https://www.googleapis.com/auth/drive.file',
+      });
       const res = await axios({
         url: 'http://localhost:3000/register',
         method: 'POST',
         'Content-Type': 'application/json',
         data: {
-          email: userData.Xt,
-          name: userData.Re,
+          code: goaRes.code,
         },
       });
       if (res.data.code === 401) alert(res.data.data);
     },
     isLoggedInF() {
-      const code = localStorage.getItem('GoogelUserCode');
+      const code = localStorage.getItem('UserEmail');
       if (code) this.isLoggedIn = true;
       else this.isLoggedIn = false;
     },
@@ -81,6 +86,18 @@ export default {
       });
       localStorage.clear();
       this.isLoggedInF();
+    },
+    async createTab() {
+      const res = await axios({
+        method: 'POST',
+        url: 'http://localhost:3000/tab',
+        'Content-Type': 'application/json',
+        data: {
+          tabName: this.tabName,
+          email: localStorage.getItem('UserEmail'),
+        },
+      });
+      console.log(res);
     },
   },
   created() {
