@@ -8,8 +8,12 @@
     </v-container>
     <v-btn v-if="isLoggedIn" class="red darken-3 white--text my-5" @click="getData()">Get Data</v-btn>
     <v-container v-if="isLoggedIn">
-      <input type="text" v-model="tabName" />
-      <v-btn class="red darken-3 white--text my-5" @click="createTab()">Create Tab</v-btn>
+      <input type="text" class="elevation-4 mx-3 green lighten-4" v-model="tabName" />
+      <v-btn class="green darken-2 white--text my-5" @click="createTab()">Create Tab</v-btn>
+    </v-container>
+    <v-container v-if="isLoggedIn">
+      <input type="text" class="elevation-4 mx-3 orange lighten-4" v-model="tabId" placeholder="Tab-ID" />
+      <v-btn class="orange darken-2 white--text my-5" @click="deleteTab()">Delete Tab</v-btn>
     </v-container>
     <v-data-table :headers="headers" :items="response"></v-data-table>
   </v-container>
@@ -30,6 +34,7 @@ export default {
       ],
       isLoggedIn: false,
       tabName: '',
+      tabId: '',
     };
   },
   components: {},
@@ -73,11 +78,10 @@ export default {
     },
     async getData() {
       const res = await axios({
-        url: 'http://localhost:3000/testdrive',
+        url: 'http://localhost:3000/tabs/' + localStorage.getItem('UserEmail'),
         method: 'GET',
-        'Content-Type': 'application/json',
       });
-      this.response = res.data.driveRes.data.files;
+      this.response = res.data.data.files;
     },
     async logout() {
       await axios({
@@ -86,6 +90,7 @@ export default {
       });
       localStorage.clear();
       this.isLoggedInF();
+      this.response = [];
     },
     async createTab() {
       const res = await axios({
@@ -97,7 +102,19 @@ export default {
           email: localStorage.getItem('UserEmail'),
         },
       });
-      console.log(res);
+      alert('Done');
+    },
+    async deleteTab() {
+      const res = await axios({
+        method: 'Delete',
+        url: 'http://localhost:3000/tab',
+        'Content-Type': 'application/json',
+        data: {
+          tabId: this.tabId,
+          email: localStorage.getItem('UserEmail'),
+        },
+      });
+      alert('Done');
     },
   },
   created() {
