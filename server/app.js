@@ -4,12 +4,14 @@ const helmet = require('helmet');
 const path = require('path');
 const cors = require('cors');
 const session = require('express-session');
+const PgSession = require('connect-pg-simple')(session);
 const routes = require('./routes/main');
 
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 require('colors');
 require('dotenv').config();
+
 const { NODE_ENV, SESSION_LIFETIME, SESSION_NAME, SESSION_SECRET } = process.env;
 
 const app = express();
@@ -18,6 +20,9 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(
   session({
+    store: new PgSession({
+      tableName: 'session',
+    }),
     secret: SESSION_SECRET,
     name: SESSION_NAME,
     saveUninitialized: false,

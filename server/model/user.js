@@ -13,4 +13,14 @@ async function createUser(name, email) {
   return res.rows;
 }
 
-module.exports = { getUser, createUser };
+async function deleteUserSession(sid) {
+  const res = await db.query('DELETE FROM session WHERE sid = $1 returning *', [sid]);
+  return res.rows;
+}
+
+async function getUserSessions() {
+  const res = await db.query('SELECT * from session');
+  return res.rows;
+}
+
+module.exports = { getUser, createUser, deleteUserSession, getUserSessions };

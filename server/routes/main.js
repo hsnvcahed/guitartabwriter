@@ -1,5 +1,6 @@
 const express = require('express');
-const { login, testDrive, logout, register } = require('../controllers/user');
+const { login, logout, register } = require('../controllers/user');
+const { testDrive } = require('../controllers/drive');
 
 const router = express.Router();
 
