@@ -18,3 +18,4 @@ new Vue({
 }).$mount('#app');
 
 Vue.use(GAuth, gauthOption);
+

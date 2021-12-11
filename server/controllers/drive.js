@@ -48,7 +48,7 @@ const getTabs = asyncHandler(async (req, res) => {
   const rootId = userDBdata[0].root_folder;
   const driveRes = await drive.files.list({
     pageSize: 20,
-    fields: 'nextPageToken, files(id, name,mimeType)',
+    fields: 'nextPageToken, files(id, name,modifiedTime)',
     q: `'${rootId}' in parents`,
   });
   res.status(200).json(driveRes);

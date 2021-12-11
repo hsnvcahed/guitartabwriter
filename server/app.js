@@ -21,7 +21,7 @@ app.use(cors());
 app.use(
   session({
     store: new PgSession({
-      tableName: 'session',
+      tableName: 'sessions',
     }),
     secret: SESSION_SECRET,
     name: SESSION_NAME,

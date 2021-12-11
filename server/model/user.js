@@ -17,12 +17,12 @@ async function createUser(name, email, rootId) {
 }
 
 async function deleteUserSession(sid) {
-  const res = await db.query('DELETE FROM session WHERE sid = $1 returning *', [sid]);
+  const res = await db.query('DELETE FROM sessions WHERE sid = $1 returning *', [sid]);
   return res.rows;
 }
 
 async function getUserSessions() {
-  const res = await db.query('SELECT * from session');
+  const res = await db.query('SELECT * from sessions');
   return res.rows;
 }
 
