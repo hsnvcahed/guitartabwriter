@@ -126,12 +126,12 @@ export default {
         method: 'PATCH',
         'Content-Type': 'application/json',
         data: {
-          string1: this.string1,
-          string2: this.string2,
-          string3: this.string3,
-          string4: this.string4,
-          string5: this.string5,
-          string6: this.string6,
+          string1: this.string1 + '\n',
+          string2: this.string2 + '\n',
+          string3: this.string3 + '\n',
+          string4: this.string4 + '\n',
+          string5: this.string5 + '\n',
+          string6: this.string6 + '\n',
         },
       });
       if (res) {
@@ -139,6 +139,19 @@ export default {
         setTimeout(() => (this.saveCheck = false), 2000);
       }
     },
+    async getTab() {
+      const res = await axios({ url: 'http://localhost:3000/tab/' + this.tabId, method: 'GET' });
+      console.log(res);
+      this.string1 = res.data.data.body.content[1].paragraph.elements[0].textRun.content;
+      this.string2 = res.data.data.body.content[2].paragraph.elements[0].textRun.content;
+      this.string3 = res.data.data.body.content[3].paragraph.elements[0].textRun.content;
+      this.string4 = res.data.data.body.content[4].paragraph.elements[0].textRun.content;
+      this.string5 = res.data.data.body.content[5].paragraph.elements[0].textRun.content;
+      this.string6 = res.data.data.body.content[6].paragraph.elements[0].textRun.content;
+    },
+  },
+  created() {
+    this.getTab();
   },
 };
 </script>

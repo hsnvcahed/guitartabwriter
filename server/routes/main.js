@@ -1,6 +1,7 @@
 const express = require('express');
 const { login, logout, register } = require('../controllers/user');
 const { testDrive, createTab, getTabs, deleteTab } = require('../controllers/drive');
+const { insertText, getText } = require('../controllers/docs');
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ router.get('/logout', logout);
 router.post('/tab', createTab);
 router.get('/tabs/:email', getTabs);
 router.delete('/tab', deleteTab);
-router.patch('/savetab/:id', (req, res) => res.status(200).send('Tab saved'));
+router.patch('/savetab/:id', insertText);
+router.get('/tab/:id', getText);
 
 module.exports = router;

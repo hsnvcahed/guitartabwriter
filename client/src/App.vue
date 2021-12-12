@@ -3,8 +3,8 @@
     <v-app-bar app>
       <v-btn to="/" class="blue white--text" active-class="indigo darken-4 white--text">Home</v-btn>
       <v-spacer></v-spacer>
-      <v-container-fluid class="text-h3"
-        ><span style="font-family: 'Titillium Web', sans-serif">Guitar—Tab Writer</span></v-container-fluid
+      <v-container class="text-h3"
+        ><span style="font-family: 'Titillium Web', sans-serif">Guitar—Tab Writer</span></v-container
       >
       <v-spacer></v-spacer>
       <v-btn v-if="!isLoggedIn" class="green white--text my-5 mx-1" @click="login()">Log In</v-btn>

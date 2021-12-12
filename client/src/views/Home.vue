@@ -1,7 +1,6 @@
 <template>
   <v-container class="d-flex justify-center flex-column text-center">
     <v-container v-if="!isLoggedIn">Please Log In</v-container>
-    <v-btn v-if="isLoggedIn" class="red darken-3 white--text my-5" @click="getData()">Get Data</v-btn>
     <v-container v-if="isLoggedIn">
       <input type="text" class="elevation-4 mx-3 green lighten-4" v-model="tabName" />
       <v-btn class="green darken-2 white--text my-5" @click="createTab()">Create Tab</v-btn>
@@ -71,6 +70,14 @@ export default {
       });
       alert('Done');
     },
+  },
+  watch: {
+    isLoggedIn(newValue, oldValue) {
+      if (this.isLoggedIn) this.getData();
+    },
+  },
+  created() {
+    if (this.isLoggedIn) this.getData();
   },
 };
 </script>
