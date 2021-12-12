@@ -1,15 +1,13 @@
 <template>
   <v-app>
-    <v-app-bar app>
-      <v-btn to="/" class="blue white--text" active-class="indigo darken-4 white--text">Home</v-btn>
+    <v-app-bar class="deep-purple lighten-3" app>
+      <v-btn to="/" class="deep-purple darken-4 white--text">Home</v-btn>
       <v-spacer></v-spacer>
-      <v-container class="text-h3"
-        ><span style="font-family: 'Titillium Web', sans-serif">Guitar—Tab Writer</span></v-container
-      >
+      <v-container class="text-h3"><span style="font-family: 'Lobster', cursive;">Guitar—Tab Writer</span></v-container>
       <v-spacer></v-spacer>
-      <v-btn v-if="!isLoggedIn" class="green white--text my-5 mx-1" @click="login()">Log In</v-btn>
-      <v-btn v-if="!isLoggedIn" class="blue white--text my-5 mx-1" @click="register()">Register</v-btn>
-      <v-btn v-if="isLoggedIn" class="purple white--text my-5" @click="logout()">Log Out</v-btn>
+      <v-btn v-if="!isLoggedIn" class="deep-purple white--text my-5 mx-1" @click="login()">Log In</v-btn>
+      <v-btn v-if="!isLoggedIn" class="deep-purple white--text my-5 mx-1" @click="register()">Register</v-btn>
+      <v-btn v-if="isLoggedIn" class="deep-purple white--text my-5" @click="logout()">Log Out</v-btn>
     </v-app-bar>
     <v-main>
       <router-view :isLoggedIn="isLoggedIn" />

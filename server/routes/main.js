@@ -14,5 +14,8 @@ router.get('/tabs/:email', getTabs);
 router.delete('/tab', deleteTab);
 router.patch('/savetab/:id', insertText);
 router.get('/tab/:id', getText);
+router.get('/label/:id', getText);
+router.post('/label', getText);
+router.delete('/label/:id', getText);
 
 module.exports = router;

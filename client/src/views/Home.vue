@@ -2,12 +2,14 @@
   <v-container class="d-flex justify-center flex-column text-center">
     <v-container v-if="!isLoggedIn">Please Log In</v-container>
     <v-container v-if="isLoggedIn">
-      <input type="text" class="elevation-4 mx-3 green lighten-4" v-model="tabName" />
-      <v-btn class="green darken-2 white--text my-5" @click="createTab()">Create Tab</v-btn>
-    </v-container>
-    <v-container v-if="isLoggedIn">
-      <input type="text" class="elevation-4 mx-3 orange lighten-4" v-model="tabId" placeholder="Tab-ID" />
-      <v-btn class="orange darken-2 white--text my-5" @click="deleteTab()">Delete Tab</v-btn>
+      <input type="text" class="elevation-4 mx-3 deep-purple lighten-4" v-model="tabName" placeholder="Tab Name" />
+      <v-btn class="deep-purple darken-2 white--text my-5" @click="createTab()">Create Tab</v-btn>
+      <input type="text" class="elevation-4 mx-3 deep-purple lighten-4" v-model="tabId" placeholder="Tab-ID" />
+      <v-btn class="deep-purple darken-2 white--text my-5" @click="deleteTab()">Delete Tab</v-btn>
+      <v-container>
+        <input type="text" class="elevation-4 mx-3 deep-purple lighten-4" v-model="tabName" placeholder="Search for Label" />
+        <v-btn class="deep-purple darken-2 white--text my-5" @click="deleteTab()"><v-icon class="white--text">mdi-magnify</v-icon></v-btn>
+      </v-container>
     </v-container>
     <v-data-table v-if="isLoggedIn" :headers="headers" :items="response" @click:row="goToTab"></v-data-table>
   </v-container>
@@ -70,6 +72,9 @@ export default {
       });
       alert('Done');
     },
+    async getLabels(){
+      
+    }
   },
   watch: {
     isLoggedIn(newValue, oldValue) {

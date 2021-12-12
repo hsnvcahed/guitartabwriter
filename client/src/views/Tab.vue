@@ -1,9 +1,9 @@
 <template>
   <v-container>
     <v-container class="d-flex flex-row flex-nowrap">
-      <input type="text" v-model="delFrom" class="orange lighten-3 ma-2 elevation-2" placeholder="From" />
-      <input type="text" v-model="delTo" class="orange lighten-3 ma-2 elevation-2" placeholder="To" />
-      <v-btn class="orange white--text" @click="removeChars">DEL</v-btn>
+      <input type="text" v-model="delFrom" class="deep-purple lighten-3 ma-2 elevation-2" placeholder="From" />
+      <input type="text" v-model="delTo" class="deep-purple lighten-3 ma-2 elevation-2" placeholder="To" />
+      <v-btn class="deep-purple white--text" @click="removeChars">DEL</v-btn>
       <v-spacer></v-spacer>
       <v-btn class="green white--text" @click="saveTab"
         ><span :hidden="saveCheck">Save</span>
@@ -13,7 +13,7 @@
     <input
       v-model="string1"
       @input="addDashToAll(1)"
-      style="width: 100%"
+      style="width: 100%; font-family: 'Share Tech Mono', monospace"
       class="text-h3 elevation-3"
       type="text"
     />
@@ -21,7 +21,7 @@
     <input
       v-model="string2"
       @input="addDashToAll(2)"
-      style="width: 100%"
+      style="width: 100%; font-family: 'Share Tech Mono', monospace"
       class="text-h3 elevation-3"
       type="text"
     />
@@ -30,7 +30,7 @@
     <input
       v-model="string3"
       @input="addDashToAll(3)"
-      style="width: 100%"
+      style="width: 100%; font-family: 'Share Tech Mono', monospace"
       class="text-h3 elevation-3"
       type="text"
     />
@@ -39,7 +39,7 @@
     <input
       v-model="string4"
       @input="addDashToAll(4)"
-      style="width: 100%"
+      style="width: 100%; font-family: 'Share Tech Mono', monospace"
       class="text-h3 elevation-3"
       type="text"
     />
@@ -48,7 +48,7 @@
     <input
       v-model="string5"
       @input="addDashToAll(5)"
-      style="width: 100%"
+      style="width: 100%; font-family: 'Share Tech Mono', monospace"
       class="text-h3 elevation-3"
       type="text"
     />
@@ -57,13 +57,13 @@
     <input
       v-model="string6"
       @input="addDashToAll(6)"
-      style="width: 100%"
+      style="width: 100%; font-family: 'Share Tech Mono', monospace"
       class="text-h3 elevation-3"
       type="text"
     />
     <p>{{ string6.length }}</p>
 
-    <div style="width: 100%" class="elevation-4 grey lighten-2">
+    <div style="width: 100%; font-family: 'Share Tech Mono', monospace; font-size: 40px" class="elevation-4 grey lighten-2 black--text">
       <p>{{ string1 }}</p>
       <p>{{ string2 }}</p>
       <p>{{ string3 }}</p>
@@ -126,12 +126,12 @@ export default {
         method: 'PATCH',
         'Content-Type': 'application/json',
         data: {
-          string1: this.string1 + '\n',
-          string2: this.string2 + '\n',
-          string3: this.string3 + '\n',
-          string4: this.string4 + '\n',
-          string5: this.string5 + '\n',
-          string6: this.string6 + '\n',
+          string1: this.string1 + '—\n',
+          string2: this.string2 + '—\n',
+          string3: this.string3 + '—\n',
+          string4: this.string4 + '—\n',
+          string5: this.string5 + '—\n',
+          string6: this.string6 + '—\n',
         },
       });
       if (res) {
@@ -148,6 +148,9 @@ export default {
       this.string4 = res.data.data.body.content[4].paragraph.elements[0].textRun.content;
       this.string5 = res.data.data.body.content[5].paragraph.elements[0].textRun.content;
       this.string6 = res.data.data.body.content[6].paragraph.elements[0].textRun.content;
+      this.delFrom = this.string1.length;
+      this.delTo = this.string1.length;
+      this.removeChars();
     },
   },
   created() {
