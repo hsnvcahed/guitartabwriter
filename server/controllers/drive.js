@@ -43,6 +43,11 @@ const createTab = asyncHandler(async (req, res) => {
 });
 
 const getTabs = asyncHandler(async (req, res) => {
+  if (req.query.label) {
+    const dbRes = await model_drive.findTabWithLabel(req.query.label);
+    res.status(200).json(dbRes);
+    return;
+  }
   const userMail = req.params.email;
   const userDBdata = await model.getUser(userMail);
   const rootId = userDBdata[0].root_folder;

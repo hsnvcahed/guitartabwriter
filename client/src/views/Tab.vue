@@ -1,10 +1,55 @@
 <template>
   <v-container>
-    <v-container class="d-flex flex-row flex-nowrap">
-      <input type="text" v-model="delFrom" class="deep-purple lighten-3 ma-2 elevation-2" placeholder="From" />
-      <input type="text" v-model="delTo" class="deep-purple lighten-3 ma-2 elevation-2" placeholder="To" />
+    <v-container class="d-flex flex-row flex-nowrap algin-center">
+      <input type="text" v-model="delFrom" class="deep-purple lighten-3 ma-2 elevation-2" placeholder=" From" />
+      <input type="text" v-model="delTo" class="deep-purple lighten-3 ma-2 elevation-2" placeholder=" To" />
       <v-btn class="deep-purple white--text" @click="removeChars">DEL</v-btn>
       <v-spacer></v-spacer>
+      <v-container style="30%">
+        <v-btn small v-for="(tab, id) in tabLabels" class="mx-1" :key="id" disabled>{{ tab.name }}</v-btn>
+      </v-container>
+      <v-spacer></v-spacer>
+      <v-dialog v-model="dialog" persistent max-width="600px">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn class="mx-2 elevation-2" color="deep-purple" text outlined v-bind="attrs" v-on="on"> Labels </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            <span class="text-h5">Labels</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-select
+                  :items="labels"
+                  dense
+                  outlined
+                  multiple
+                  item-text="name"
+                  label="Add/Remove Label"
+                  item-value="label_id"
+                  v-model="labelSelect"
+                ></v-select>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="deep-purple darken-1 white--text" small @click="createTabLabel"> Add Selected </v-btn>
+            <v-btn color="deep-purple darken-1 white--text" small @click="deleteTabLabel"> Remove Selected </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="deep-purple darken-1"
+              text
+              @click="
+                dialog = false;
+                labelSelect = [];
+              "
+            >
+              Close
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-btn class="green white--text" @click="saveTab"
         ><span :hidden="saveCheck">Save</span>
         <span :hidden="!saveCheck"><v-icon>mdi-check-bold</v-icon></span>
@@ -93,6 +138,10 @@ export default {
       delFrom: '',
       delTo: '',
       saveCheck: false,
+      dialog: false,
+      labels: [],
+      tabLabels: [],
+      labelSelect: [],
     };
   },
   computed: {
@@ -119,6 +168,14 @@ export default {
       }
       this.delFrom = '';
       this.delTo = '';
+    },
+    async getLabels() {
+      const res = await axios({
+        url: 'http://localhost:3000/labels/' + localStorage.getItem('UserEmail'),
+        method: 'GET',
+      });
+
+      this.labels = res.data;
     },
     async saveTab() {
       const res = await axios({
@@ -152,9 +209,58 @@ export default {
       this.delTo = this.string1.length;
       this.removeChars();
     },
+    async getTabLabels() {
+      const res = await axios({
+        url: 'http://localhost:3000/labels/' + localStorage.getItem('UserEmail') + '?tab=' + this.tabId,
+        method: 'GET',
+      });
+      this.tabLabels = res.data;
+      console.log('###################');
+
+      console.log(this.tabLabels);
+    },
+
+    async createTabLabel() {
+      const filteredLabels = this.labelSelect.filter((el) => this.tabLabels.filter((ell) => ell.label_id == el).length == 0);
+      for (const el of filteredLabels) {
+        const res = await axios({
+          url: 'http://localhost:3000/tabslabel',
+          method: 'POST',
+          'Content-Type': 'application/json',
+          data: {
+            label: el,
+            tab: this.tabId,
+          },
+        });
+        console.log(res.data);
+      }
+      this.getTabLabels();
+    },
+    async deleteTabLabel() {
+      const filteredLabels = this.labelSelect.filter((el) => this.tabLabels.filter((ell) => ell.label_id == el).length == 1);
+      console.log(filteredLabels);
+
+      for (const el of filteredLabels) {
+        console.log(el);
+
+        const res = await axios({
+          url: 'http://localhost:3000/tabslabel',
+          method: 'DELETE',
+          'Content-Type': 'application/json',
+          data: {
+            id: el,
+            tab: this.tabId,
+          },
+        });
+        console.log(res.data);
+      }
+      this.getTabLabels();
+    },
   },
   created() {
     this.getTab();
+    this.getLabels();
+    this.getTabLabels();
   },
 };
 </script>
